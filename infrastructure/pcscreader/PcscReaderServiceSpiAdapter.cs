@@ -13,7 +13,7 @@ namespace DemoKeypleLess.infrastructure.pcscreader
         private readonly ILogger _logger;
         private readonly IContextFactory _contextFactory;
         private ISCardContext _context;
-        private String? _readerName;
+        private string? _readerName;
         private byte[]? _cardAtr;
         private ICardReader? _reader;
         private const string SmartCardServiceName = "SCardSvr";
@@ -21,7 +21,7 @@ namespace DemoKeypleLess.infrastructure.pcscreader
 
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PcscService"/> class.
+        /// Creates a new instance of the <see cref="ReaderServiceSpi"/> class.
         /// </summary>
         public PcscReaderServiceSpiAdapter ( )
         {
@@ -65,7 +65,7 @@ namespace DemoKeypleLess.infrastructure.pcscreader
         }
 
         /// <inheritdoc/>
-        public void SelectReader ( String readerName )
+        public void SelectReader ( string readerName )
         {
             _readerName = readerName;
         }

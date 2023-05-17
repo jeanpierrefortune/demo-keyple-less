@@ -18,7 +18,7 @@ namespace DemoKeypleLess.domain.spi {
         /// Selects the reader to work with.
         /// </summary>
         /// <param name="readerName">The name of the reader.</param>
-        void SelectReader ( String readerName );
+        void SelectReader ( string readerName );
 
         /// <summary>
         /// Checks if a card is present in the reader.

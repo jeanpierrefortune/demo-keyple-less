@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="FullSignature">
+  <Class Name="DemoKeypleLess.domain.spi.ReaderIOException">
+    <Position X="11" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\spi\ReaderIOException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.spi.CardIOException">
+    <Position X="11" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\spi\CardIOException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.spi.UnexpectedStatusWordException">
+    <Position X="11" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\spi\UnexpectedStatusWordException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.infrastructure.pcscreader.PcscReaderServiceSpiAdapter" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAABFHAAAAAAAiAIIAAAAIIAABAAEAAAAAA=</HashCode>
+      <FileName>infrastructure\pcscreader\PcscReaderServiceSpiAdapter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="DemoKeypleLess.infrastructure.pcscreader.PcscReaderServiceSpiProvider">
+    <Position X="0.5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAgAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>infrastructure\pcscreader\PcscReaderServiceSpiProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.application.Application" Collapsed="true">
+    <Position X="3.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAABAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>application\Application.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.api.InputData" Collapsed="true">
+    <Position X="3.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\api\MainServiceAdapter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.api.ExecuteRemoteServiceBodyContent">
+    <Position X="0.5" Y="11" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\api\MainServiceAdapter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.api.MainServiceAdapter" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AEAgAAKAAEAAAACAYAAAABAAYKAACAGKAAIAUCCAAAA=</HashCode>
+      <FileName>domain\api\MainServiceAdapter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DemoKeypleLess.domain.api.MainServiceApiProvider" Collapsed="true">
+    <Position X="3.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>domain\api\MainServiceApiProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.CardSelector" Collapsed="true">
+    <Position X="7.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAEAAABAAABAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.ApduRequest" Collapsed="true">
+    <Position X="3.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAgAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.CardRequest" Collapsed="true">
+    <Position X="7.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.CardSelectionRequest" Collapsed="true">
+    <Position X="3.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAIAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.TransmitCardSelectionRequestsParameters" Collapsed="true">
+    <Position X="7.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAQBAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.TransmitCardSelectionRequestsCmdBody" Collapsed="true">
+    <Position X="5.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAACAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.ApduResponse" Collapsed="true">
+    <Position X="5.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.CardResponse" Collapsed="true">
+    <Position X="9" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.CardSelectionResponse" Collapsed="true">
+    <Position X="5.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAEACAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.Error" Collapsed="true">
+    <Position X="9" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.TransmitCardSelectionRequestsRespBody" Collapsed="true">
+    <Position X="9" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.data.TransmitCardSelectionRequestsRespBodyError" Collapsed="true">
+    <Position X="3.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RemoteServiceDTO" Collapsed="true">
+    <Position X="3.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAACAAAABAAAIAAAAAAAAAAAABAAACAQ=</HashCode>
+      <FileName>domain\data\RemoteServiceDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.utils.HexUtil" Collapsed="true">
+    <Position X="11.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAMAAAAAAAAAAAAAAAgAAAAIAAAA=</HashCode>
+      <FileName>domain\utils\HexUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.domain.utils.HexStringByteArrayConverter" Collapsed="true">
+    <Position X="9.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAIAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HexStringSetToIntHashSetConverter" Collapsed="true">
+    <Position X="11.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileOccurrenceConverter" Collapsed="true">
+    <Position X="13" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileControlInformationConverter" Collapsed="true">
+    <Position X="11.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MultiSelectionProcessingConverter" Collapsed="true">
+    <Position X="9.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChannelControlConverter" Collapsed="true">
+    <Position X="9.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HexStringToIntConverter" Collapsed="true">
+    <Position X="13" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>domain\utils\JsonConverters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DemoKeypleLess.infrastructure.server.ServerSpiAdapter" Collapsed="true">
+    <Position X="11.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAIQAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>infrastructure\server\ServerSpiAdapter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DemoKeypleLess.infrastructure.server.ServerSpiProvider" Collapsed="true">
+    <Position X="11.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAgAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>infrastructure\server\ServerSpiProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="DemoKeypleLess.domain.spi.ReaderServiceSpi">
+    <Position X="3.75" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEFAAAAAAAiAAAAAAAIIAABAAAAAAAAA=</HashCode>
+      <FileName>domain\spi\ReaderServiceSpi.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DemoKeypleLess.domain.api.MainServiceApi">
+    <Position X="0.5" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\api\MainServiceApi.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DemoKeypleLess.domain.spi.ServerSpi" Collapsed="true">
+    <Position X="11.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\spi\ServerSpi.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="DemoKeypleLess.domain.data.FileOccurrence" Collapsed="true">
+    <Position X="5.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAgAAAAAAAgAAAAAAAAQAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DemoKeypleLess.domain.data.FileControlInformation" Collapsed="true">
+    <Position X="7.25" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAgAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DemoKeypleLess.domain.data.MultiSelectionProcessing" Collapsed="true">
+    <Position X="3.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DemoKeypleLess.domain.data.ChannelControl" Collapsed="true">
+    <Position X="3.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DemoKeypleLess.domain.data.ErrorCode" Collapsed="true">
+    <Position X="5.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAACAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>domain\data\CardCommunicationDTO.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

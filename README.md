@@ -4,11 +4,11 @@
 
 This is a C# application designed according to the Hexagonal Architecture pattern, 
 demonstrating how to implement a client for a Keyple Distributed server without using the Keyple library, 
-solely utilizing the Json API as documented here: https://keyple.org/learn/user-guide/distributed-json-api-1-0/.
+solely utilizing the Distributed JSON API as documented here: https://keyple.org/learn/user-guide/distributed-json-api-1-0/.
 
-The Hexagonal Architecture, or Ports and Adapters pattern, creates a loosely coupled application for seamless integration 
-with its software environment. This architecture effectively segregates the application into inside, 
-outside, and boundary layers. The core business logic resides in the inside layer, while the outside layer encompasses 
+The Hexagonal Architecture pattern, creates a loosely coupled application for seamless integration 
+with its software environment. This architecture effectively segregates the application into domain, 
+, and infrastructure layers. The core business logic resides in the domain layer, while the outside layer encompasses 
 all entities interacting with the application, such as databases, UI, and test scripts. 
 The boundary layer orchestrates the communication between the inside and outside layers.
 

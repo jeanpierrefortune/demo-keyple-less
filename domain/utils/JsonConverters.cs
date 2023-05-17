@@ -124,3 +124,22 @@ public class ChannelControlConverter : JsonConverter {
         writer.WriteValue ( value.ToString () );
     }
 }
+
+public class HexStringToIntConverter : JsonConverter {
+    public override bool CanConvert ( Type objectType )
+    {
+        return objectType == typeof ( int );
+    }
+
+    public override object ReadJson ( JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer )
+    {
+        string hexString = (string)reader.Value;
+        return Convert.ToInt32 ( hexString, 16 );
+    }
+
+    public override void WriteJson ( JsonWriter writer, object value, JsonSerializer serializer )
+    {
+        int intValue = (int)value;
+        writer.WriteValue ( intValue.ToString ( "X4" ) ); // X4 for 2-byte hex string
+    }
+}

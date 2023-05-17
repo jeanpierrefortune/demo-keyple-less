@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace DemoKeypleLess.domain.spi {
     public interface ServerSpi {
-        String transmitRequest ( String jsonRequest );
+        string transmitRequest ( string jsonRequest );
     }
 }

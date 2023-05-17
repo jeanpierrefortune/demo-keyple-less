@@ -9,13 +9,13 @@ using DemoKeypleLess.infrastructure.server;
 using DemoKeypleLess.domain.api;
 
 Log.Logger = new LoggerConfiguration ()
-    .MinimumLevel.Override ( "DemoKeypleLess", LogEventLevel.Warning )
+    .MinimumLevel.Debug ()
     .Enrich.FromLogContext ()
-    .WriteTo.Console ()
+    .WriteTo.Console ( outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}" )
     .WriteTo.File ( "logs/demo-keyple-less-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7 )
     .CreateLogger ();
-Log.Information ( "Starting the application" );
 
+Log.Information ( "Starting the application" );
 
 try
 {
