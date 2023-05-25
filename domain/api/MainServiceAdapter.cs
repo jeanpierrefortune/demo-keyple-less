@@ -6,10 +6,12 @@ using Newtonsoft.Json.Linq;
 using Serilog;
 using Serilog.Events;
 
-namespace DemoKeypleLess.domain.api {
+namespace DemoKeypleLess.domain.api
+{
 
 
-    class MainServiceAdapter : MainServiceApi {
+    class MainServiceAdapter : MainServiceApi
+    {
         private readonly ILogger _logger;
         private readonly ReaderServiceSpi _readerService;
         private readonly ServerSpi _server;
@@ -21,38 +23,38 @@ namespace DemoKeypleLess.domain.api {
         private const int SW1_MASK = 0xFF00;
         private const int SW2_MASK = 0x00FF;
 
-        internal MainServiceAdapter ( ReaderServiceSpi readerService, string readerName, ServerSpi server )
+        internal MainServiceAdapter(ReaderServiceSpi readerService, string readerName, ServerSpi server)
         {
-            _logger = Log.ForContext<MainServiceAdapter> ();
+            _logger = Log.ForContext<MainServiceAdapter>();
 
-            _logger.Information ( "Creation of main service..." );
+            _logger.Information("Creation of main service...");
 
             _readerService = readerService;
             _server = server;
 
-            _clientNodeId = Guid.NewGuid ().ToString ();
+            _clientNodeId = Guid.NewGuid().ToString();
 
-            List<string> readerNames = readerService.GetReaders ();
-            
+            List<string> readerNames = readerService.GetReaders();
+
             if (readerNames.Count == 0)
             {
-                Misc.DisplayAndLog ( "No reader found!", ConsoleColor.Red, LogEventLevel.Error, _logger );
-                Environment.Exit ( 1 );
+                Misc.DisplayAndLog("No reader found!", ConsoleColor.Red, LogEventLevel.Error, _logger);
+                Environment.Exit(1);
             }
 
-            if (!readerNames.Contains ( readerName ))
+            if (!readerNames.Contains(readerName))
             {
-                Misc.DisplayAndLog ( $"Reader '{readerName}' is not found in the list of readers.", ConsoleColor.Red, LogEventLevel.Error, _logger );
-                Environment.Exit ( 1 );
+                Misc.DisplayAndLog($"Reader '{readerName}' is not found in the list of readers.", ConsoleColor.Red, LogEventLevel.Error, _logger);
+                Environment.Exit(1);
             }
 
             _localReaderName = readerName;
-            _logger.Information ( $"Select reader {_localReaderName}" );
-            readerService.SelectReader ( _localReaderName );
+            _logger.Information($"Select reader {_localReaderName}");
+            readerService.SelectReader(_localReaderName);
         }
 
 
-        private bool IsCase4 ( byte[] apduCommand )
+        private bool IsCase4(byte[] apduCommand)
         {
             if (apduCommand != null && apduCommand.Length > 4)
             {
@@ -62,11 +64,11 @@ namespace DemoKeypleLess.domain.api {
         }
 
 
-        ApduResponse ProcessApduRequest ( ApduRequest apduRequest )
+        ApduResponse ProcessApduRequest(ApduRequest apduRequest)
         {
-            ApduResponse apduResponse = new ApduResponse ();
+            ApduResponse apduResponse = new ApduResponse();
 
-            apduResponse.Apdu = _readerService.TransmitApdu ( apduRequest.Apdu );
+            apduResponse.Apdu = _readerService.TransmitApdu(apduRequest.Apdu);
             apduResponse.StatusWord = (apduResponse.Apdu[apduResponse.Apdu.Length - 2] << 8) | apduResponse.Apdu[apduResponse.Apdu.Length - 1];
 
             if (apduResponse.Apdu.Length == 2)
@@ -80,16 +82,16 @@ namespace DemoKeypleLess.domain.api {
                         0x00,
                         (byte)(apduResponse.StatusWord & SW2_MASK)
                         };
-                    apduResponse = ProcessApduRequest ( new ApduRequest { Apdu = getResponseApdu, Info = "Internal Get Response" } );
+                    apduResponse = ProcessApduRequest(new ApduRequest { Apdu = getResponseApdu, Info = "Internal Get Response" });
                 }
                 else if ((apduResponse.StatusWord & SW1_MASK) == SW_6C00)
                 {
                     apduRequest.Apdu[apduRequest.Apdu.Length - 1] =
                         (byte)(apduResponse.StatusWord & SW2_MASK);
-                    apduResponse = ProcessApduRequest ( apduRequest );
+                    apduResponse = ProcessApduRequest(apduRequest);
                 }
-                else if (IsCase4 ( apduRequest.Apdu )
-                    && apduRequest.SuccessfulStatusWords.Contains ( apduResponse.StatusWord ))
+                else if (IsCase4(apduRequest.Apdu)
+                    && apduRequest.SuccessfulStatusWords.Contains(apduResponse.StatusWord))
                 {
                     byte[] getResponseApdu = {
                     0x00,
@@ -98,14 +100,14 @@ namespace DemoKeypleLess.domain.api {
                     0x00,
                     apduRequest.Apdu[apduRequest.Apdu.Length - 1]
                     };
-                    apduResponse = ProcessApduRequest ( new ApduRequest { Apdu = getResponseApdu, Info = "Internal Get Response" } );
+                    apduResponse = ProcessApduRequest(new ApduRequest { Apdu = getResponseApdu, Info = "Internal Get Response" });
                 }
             }
 
             return apduResponse;
         }
 
-        private byte ComputeSelectApplicationP2 ( FileOccurrence fileOccurrence, FileControlInformation fileControlInformation )
+        private byte ComputeSelectApplicationP2(FileOccurrence fileOccurrence, FileControlInformation fileControlInformation)
         {
             byte p2;
 
@@ -124,7 +126,7 @@ namespace DemoKeypleLess.domain.api {
                     p2 = 0x03;
                     break;
                 default:
-                    throw new Exception ( "Unexpected value: " + fileOccurrence );
+                    throw new Exception("Unexpected value: " + fileOccurrence);
             }
 
             switch (fileControlInformation)
@@ -142,13 +144,13 @@ namespace DemoKeypleLess.domain.api {
                     p2 |= 0x0C;
                     break;
                 default:
-                    throw new Exception ( "Unexpected value: " + fileControlInformation );
+                    throw new Exception("Unexpected value: " + fileControlInformation);
             }
 
             return p2;
         }
 
-        private ApduResponse SelectApplication ( CardSelector cardSelector )
+        private ApduResponse SelectApplication(CardSelector cardSelector)
         {
             byte[] selectApplicationCommand = new byte[6 + cardSelector.Aid.Length];
             selectApplicationCommand[0] = 0x00; // CLA
@@ -157,10 +159,10 @@ namespace DemoKeypleLess.domain.api {
                                                 // P2: b0,b1 define the File occurrence, b2,b3 define the File control information
                                                 // we use the bitmask defined in the respective enums
             selectApplicationCommand[3] =
-                ComputeSelectApplicationP2 (
-                    cardSelector.FileOccurrence, cardSelector.FileControlInformation );
+                ComputeSelectApplicationP2(
+                    cardSelector.FileOccurrence, cardSelector.FileControlInformation);
             selectApplicationCommand[4] = (byte)(cardSelector.Aid.Length); // Lc
-            Array.Copy ( cardSelector.Aid, 0, selectApplicationCommand, 5, cardSelector.Aid.Length ); // data
+            Array.Copy(cardSelector.Aid, 0, selectApplicationCommand, 5, cardSelector.Aid.Length); // data
             selectApplicationCommand[5 + cardSelector.Aid.Length] = 0x00; // Le
 
             ApduRequest apduRequest = new ApduRequest
@@ -168,48 +170,48 @@ namespace DemoKeypleLess.domain.api {
                 Apdu = selectApplicationCommand
             };
 
-            if (_logger.IsEnabled ( Serilog.Events.LogEventLevel.Debug ))
+            if (_logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
             {
                 apduRequest.Info = "Internal Select Application";
             }
 
-            return ProcessApduRequest ( apduRequest );
+            return ProcessApduRequest(apduRequest);
         }
 
-        private CardResponse ProcessCardRequest ( CardRequest cardRequest )
+        private CardResponse ProcessCardRequest(CardRequest cardRequest)
         {
-            var apduResponses = new List<ApduResponse> ();
+            var apduResponses = new List<ApduResponse>();
 
             foreach (var apduRequest in cardRequest.ApduRequests)
             {
                 try
                 {
-                    var apduResponse = ProcessApduRequest ( apduRequest );
-                    apduResponses.Add ( apduResponse );
+                    var apduResponse = ProcessApduRequest(apduRequest);
+                    apduResponses.Add(apduResponse);
 
-                    if (!apduRequest.SuccessfulStatusWords.Contains ( apduResponse.StatusWord ))
+                    if (!apduRequest.SuccessfulStatusWords.Contains(apduResponse.StatusWord))
                     {
-                        throw new UnexpectedStatusWordException ( "Unexpected status word." );
+                        throw new UnexpectedStatusWordException("Unexpected status word.");
                     }
                 }
                 catch (ServerIOException ex)
                 {
                     // The process has been interrupted. We close the logical channel and throw a
                     // ReaderBrokenCommunicationException.
-                    _readerService.ClosePhysicalChannel ();
+                    _readerService.ClosePhysicalChannel();
 
-                    throw new ReaderIOException ( "Reader communication failure while transmitting a card request.",
-                        ex );
+                    throw new ReaderIOException("Reader communication failure while transmitting a card request.",
+                        ex);
                 }
                 catch (UnexpectedStatusWordException ex)
                 {
                     // The process has been interrupted. We close the logical channel and throw a
                     // CardBrokenCommunicationException.
-                    _readerService.ClosePhysicalChannel ();
+                    _readerService.ClosePhysicalChannel();
 
-                    throw new CardIOException (
+                    throw new CardIOException(
                         "Card communication failure while transmitting a card request.",
-                        ex );
+                        ex);
                 }
             }
 
@@ -217,30 +219,30 @@ namespace DemoKeypleLess.domain.api {
         }
 
 
-        private CardSelectionResponse ProcessCardSelectionRequest ( CardSelectionRequest cardSelectionRequest )
+        private CardSelectionResponse ProcessCardSelectionRequest(CardSelectionRequest cardSelectionRequest)
         {
-            _readerService.OpenPhysicalChannel ();
-            ApduResponse selectAppResponse = SelectApplication ( cardSelectionRequest.CardSelector );
+            _readerService.OpenPhysicalChannel();
+            ApduResponse selectAppResponse = SelectApplication(cardSelectionRequest.CardSelector);
             CardResponse cardResponse = null;
             if (cardSelectionRequest.CardRequest != null)
             {
-                cardResponse = ProcessCardRequest ( cardSelectionRequest.CardRequest );
+                cardResponse = ProcessCardRequest(cardSelectionRequest.CardRequest);
             }
-            CardSelectionResponse cardSelectionResponse = new CardSelectionResponse { HasMatched = true, PowerOnData = _readerService.GetPowerOnData (), SelectApplicationResponse = selectAppResponse, CardResponse = cardResponse };
+            CardSelectionResponse cardSelectionResponse = new CardSelectionResponse { HasMatched = true, PowerOnData = _readerService.GetPowerOnData(), SelectApplicationResponse = selectAppResponse, CardResponse = cardResponse };
             return cardSelectionResponse;
         }
 
-        private MessageDto ProcessTransaction ( MessageDto message )
+        private MessageDto ProcessTransaction(MessageDto message)
         {
             bool isServiceEnded = false;
             while (message.Action != "END_REMOTE_SERVICE")
             {
-                _logger.Information ( $"Processing action {message.Action}" );
-                var jsonObject = JObject.Parse ( message.Body );
-                string service = jsonObject["service"].ToString ();
-                JObject body = new JObject ();
+                _logger.Information($"Processing action {message.Action}");
+                var jsonObject = JObject.Parse(message.Body);
+                string service = jsonObject["service"].ToString();
+                JObject body = new JObject();
                 body["service"] = service;
-                _logger.Information ( $"Service: {service}" );
+                _logger.Information($"Service: {service}");
                 switch (service)
                 {
                     case "IS_CONTACTLESS":
@@ -250,32 +252,32 @@ namespace DemoKeypleLess.domain.api {
                         body["result"] = true;
                         break;
                     case "TRANSMIT_CARD_SELECTION_REQUESTS":
-                        var transmitCardSelectionRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardSelectionRequestsCmdBody> ( message.Body );
+                        var transmitCardSelectionRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardSelectionRequestsCmdBody>(message.Body);
                         var cardSelectionRequest = transmitCardSelectionRequestsCmdBody.Parameters.CardSelectionRequests[0];
-                        var cardSelectionResponse = ProcessCardSelectionRequest ( cardSelectionRequest );
-                        var cardSelectionResponses = new List<CardSelectionResponse> ();
-                        cardSelectionResponses.Add ( cardSelectionResponse );
-                        body["result"] = JArray.FromObject ( cardSelectionResponses );
+                        var cardSelectionResponse = ProcessCardSelectionRequest(cardSelectionRequest);
+                        var cardSelectionResponses = new List<CardSelectionResponse>();
+                        cardSelectionResponses.Add(cardSelectionResponse);
+                        body["result"] = JArray.FromObject(cardSelectionResponses);
                         break;
                     case "TRANSMIT_CARD_REQUEST":
-                        var transmitCardRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardRequestCmdBody> ( message.Body );
+                        var transmitCardRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardRequestCmdBody>(message.Body);
                         var cardRequest = transmitCardRequestsCmdBody.Parameters.CardRequest;
-                        var cardResponse = ProcessCardRequest ( cardRequest );
-                        body["result"] = JObject.FromObject ( cardResponse );
+                        var cardResponse = ProcessCardRequest(cardRequest);
+                        body["result"] = JObject.FromObject(cardResponse);
                         break;
                 }
-                message.SetAction ( "RESP" );
-                string jsonBodyString = JsonConvert.SerializeObject ( body, Formatting.None );
-                message.SetBody ( jsonBodyString );
-                var jsonResponse = _server.transmitRequest ( JsonConvert.SerializeObject ( message, Formatting.None ) );
-                message = JsonConvert.DeserializeObject<List<MessageDto>> ( jsonResponse )[0];
+                message.SetAction("RESP");
+                string jsonBodyString = JsonConvert.SerializeObject(body, Formatting.None);
+                message.SetBody(jsonBodyString);
+                var jsonResponse = _server.transmitRequest(JsonConvert.SerializeObject(message, Formatting.None));
+                message = JsonConvert.DeserializeObject<List<MessageDto>>(jsonResponse)[0];
             }
             return message;
         }
 
-        private string ExecuteRemoteService ( string serviceId, InputData inputData )
+        private string ExecuteRemoteService(string serviceId, InputData inputData)
         {
-            string sessionId = Guid.NewGuid ().ToString ();
+            string sessionId = Guid.NewGuid().ToString();
 
 
             // Create and fill ExecuteRemoteServiceBodyContent object
@@ -286,43 +288,43 @@ namespace DemoKeypleLess.domain.api {
             };
 
             // Create and fill RemoteServiceDto object
-            var message = new MessageDto ()
-                .SetAction ( "EXECUTE_REMOTE_SERVICE" )
-                .SetBody ( JsonConvert.SerializeObject ( bodyContent, Formatting.None ) )
-                .SetClientNodeId ( _clientNodeId )
-                .SetLocalReaderName ( _localReaderName )
-                .SetSessionId ( sessionId );
+            var message = new MessageDto()
+                .SetAction("EXECUTE_REMOTE_SERVICE")
+                .SetBody(JsonConvert.SerializeObject(bodyContent, Formatting.None))
+                .SetClientNodeId(_clientNodeId)
+                .SetLocalReaderName(_localReaderName)
+                .SetSessionId(sessionId);
 
-            var jsonResponse = _server.transmitRequest ( JsonConvert.SerializeObject ( message ) );
+            var jsonResponse = _server.transmitRequest(JsonConvert.SerializeObject(message));
 
-            message = JsonConvert.DeserializeObject<List<MessageDto>> ( jsonResponse )[0];
+            message = JsonConvert.DeserializeObject<List<MessageDto>>(jsonResponse)[0];
 
-            message = ProcessTransaction ( message );
+            message = ProcessTransaction(message);
 
             return message.Body;
         }
-        public void WaitForCardInsertion ( )
+        public void WaitForCardInsertion()
         {
             _readerService.WaitForCardPresent();
         }
 
-        public void WaitForCardRemoval ( )
+        public void WaitForCardRemoval()
         {
             _readerService.WaitForCardAbsent();
         }
 
-        public string SelectAndReadContracts ( )
+        public string SelectAndReadContracts()
         {
-            _logger.Information ( "Execute remote service to read the card content..." );
+            _logger.Information("Execute remote service to read the card content...");
 
-            return ExecuteRemoteService ( "SELECT_APP_AND_READ_CONTRACTS", new InputDataRead { } );
+            return ExecuteRemoteService("SELECT_APP_AND_READ_CONTRACTS", new InputDataRead { });
         }
 
-        public string SelectAndIncreaseContractCounter ( int counterIncrement )
+        public string SelectAndIncreaseContractCounter(int counterIncrement)
         {
-            _logger.Information ( "Execute remote service to increase the contract counter..." );
+            _logger.Information("Execute remote service to increase the contract counter...");
 
-            return ExecuteRemoteService ( "SELECT_APP_AND_INCREASE_CONTRACT_COUNTER", new InputDataWrite { CounterIncrement = counterIncrement.ToString () } );
+            return ExecuteRemoteService("SELECT_APP_AND_INCREASE_CONTRACT_COUNTER", new InputDataWrite { CounterIncrement = counterIncrement.ToString() });
         }
 
     }

@@ -1,24 +1,26 @@
-﻿using DemoKeypleLess.domain.spi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DemoKeypleLess.domain.spi;
 
-namespace DemoKeypleLess.infrastructure.pcscreader {
+namespace DemoKeypleLess.infrastructure.pcscreader
+{
     /// <summary>
     /// Provides a singleton instance of PcscReaderSpi implemented by PcscReaderServiceSpiAdapter.
     /// </summary>
-    public class PcscReaderServiceSpiProvider {
+    public class PcscReaderServiceSpiProvider
+    {
         private static PcscReaderServiceSpiAdapter? _instance;
-        private static readonly object _lock = new object ();
+        private static readonly object _lock = new object();
 
-        private PcscReaderServiceSpiProvider ( ) { }
+        private PcscReaderServiceSpiProvider() { }
 
         /// <summary>
         /// Gets the singleton instance of PcscReaderServiceSpiAdapter.
         /// </summary>
-        public static ReaderServiceSpi getInstance ( )
+        public static ReaderServiceSpi getInstance()
         {
             if (_instance == null)
             {
@@ -26,7 +28,7 @@ namespace DemoKeypleLess.infrastructure.pcscreader {
                 {
                     if (_instance == null)
                     {
-                        _instance = new PcscReaderServiceSpiAdapter ();
+                        _instance = new PcscReaderServiceSpiAdapter();
                     }
                 }
             }

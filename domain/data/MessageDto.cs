@@ -3,66 +3,67 @@
 /// <summary>
 /// MessageDto is a data transfer object for representing messages exchanges with the Keyple ticketing server.
 /// </summary>
-public class MessageDto {
+public class MessageDto
+{
 
-    [JsonProperty ( "action" )]
+    [JsonProperty("action")]
     public string Action { get; private set; }
 
-    [JsonProperty ( "body" )]
+    [JsonProperty("body")]
     public string Body { get; private set; }
 
-    [JsonProperty ( "clientNodeId" )]
+    [JsonProperty("clientNodeId")]
     public string ClientNodeId { get; private set; }
 
-    [JsonProperty ( "localReaderName" )]
+    [JsonProperty("localReaderName")]
     public string LocalReaderName { get; private set; }
 
-    [JsonProperty ( "remoteReaderName" )]
+    [JsonProperty("remoteReaderName")]
     public string RemoteReaderName { get; private set; }
 
-    [JsonProperty ( "serverNodeId" )]
+    [JsonProperty("serverNodeId")]
     public string ServerNodeId { get; private set; }
 
-    [JsonProperty ( "sessionId" )]
+    [JsonProperty("sessionId")]
     public string SessionId { get; private set; }
 
-    public MessageDto SetAction ( string action )
+    public MessageDto SetAction(string action)
     {
         this.Action = action;
         return this;
     }
 
-    public MessageDto SetBody ( string body )
+    public MessageDto SetBody(string body)
     {
         this.Body = body;
         return this;
     }
 
-    public MessageDto SetClientNodeId ( string clientNodeId )
+    public MessageDto SetClientNodeId(string clientNodeId)
     {
         this.ClientNodeId = clientNodeId;
         return this;
     }
 
-    public MessageDto SetLocalReaderName ( string localReaderName )
+    public MessageDto SetLocalReaderName(string localReaderName)
     {
         this.LocalReaderName = localReaderName;
         return this;
     }
 
-    public MessageDto SetRemoteReaderName ( string remoteReaderName )
+    public MessageDto SetRemoteReaderName(string remoteReaderName)
     {
         this.RemoteReaderName = remoteReaderName;
         return this;
     }
 
-    public MessageDto SetServerNodeId ( string serverNodeId )
+    public MessageDto SetServerNodeId(string serverNodeId)
     {
         this.ServerNodeId = serverNodeId;
         return this;
     }
 
-    public MessageDto SetSessionId ( string sessionId )
+    public MessageDto SetSessionId(string sessionId)
     {
         this.SessionId = sessionId;
         return this;
@@ -72,14 +73,16 @@ public class MessageDto {
 /// <summary>
 /// Abstract base class for input data.
 /// </summary>
-abstract class InputData {
+abstract class InputData
+{
 }
 
 /// <summary>
 /// Input data used for the read step.
 /// Currently empty.
 /// </summary>
-class InputDataRead : InputData {
+class InputDataRead : InputData
+{
 }
 
 
@@ -87,33 +90,36 @@ class InputDataRead : InputData {
 /// Input data used for the write step.
 /// Currently empty.
 /// </summary>
-class InputDataWrite : InputData {
-    [JsonProperty ( "counterIncrement" )]
+class InputDataWrite : InputData
+{
+    [JsonProperty("counterIncrement")]
     public string CounterIncrement { get; set; }
 }
 
 /// <summary>
 /// Output data used for the server operation result.
 /// </summary>
-class OutputData {
+class OutputData
+{
     /// <summary>
     /// Gets or sets the contracts.
     /// </summary>
-    [JsonProperty ( "items" )]
+    [JsonProperty("items")]
     public List<string> Items { get; set; }
 
     /// <summary>
     /// Gets or sets the status code.
     /// </summary>
-    [JsonProperty ( "statusCode" )]
+    [JsonProperty("statusCode")]
     public int StatusCode { get; set; }
 }
 
-class OutputDto {
+class OutputDto
+{
     /// <summary>
     /// Gets or sets the OutputData.
     /// </summary>
-    [JsonProperty ( "outputData" )]
+    [JsonProperty("outputData")]
     public OutputData OutputData { get; set; }
 }
 
@@ -121,10 +127,11 @@ class OutputDto {
 /// <summary>
 /// Represents the body content of the EXECUTE_REMOTE_SERVICE message.
 /// </summary>
-class ExecuteRemoteServiceBodyContent {
-    [JsonProperty ( "serviceId" )]
+class ExecuteRemoteServiceBodyContent
+{
+    [JsonProperty("serviceId")]
     public string ServiceId { get; set; }
 
-    [JsonProperty ( "inputData" )]
+    [JsonProperty("inputData")]
     public InputData InputData { get; set; }
 }

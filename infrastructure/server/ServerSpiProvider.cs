@@ -1,25 +1,27 @@
-﻿using DemoKeypleLess.domain.spi;
-using DemoKeypleLess.infrastructure.pcscreader;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DemoKeypleLess.domain.spi;
+using DemoKeypleLess.infrastructure.pcscreader;
 
-namespace DemoKeypleLess.infrastructure.server {
+namespace DemoKeypleLess.infrastructure.server
+{
     /// <summary>
     /// Provides a singleton instance of ServerSpi implemented by ServerSpiAdapter.
     /// </summary>
-    public class ServerSpiProvider {
+    public class ServerSpiProvider
+    {
         private static ServerSpiAdapter? _instance;
-        private static readonly object _lock = new object ();
+        private static readonly object _lock = new object();
 
-        private ServerSpiProvider ( ) { }
+        private ServerSpiProvider() { }
 
         /// <summary>
         /// Gets the singleton instance of ServerSpiAdapter.
         /// </summary>
-        public static ServerSpi getInstance ( string baseUrl, int port, string endPoint )
+        public static ServerSpi getInstance(string baseUrl, int port, string endPoint)
         {
             if (_instance == null)
             {
@@ -27,7 +29,7 @@ namespace DemoKeypleLess.infrastructure.server {
                 {
                     if (_instance == null)
                     {
-                        _instance = new ServerSpiAdapter ( baseUrl, port, endPoint );
+                        _instance = new ServerSpiAdapter(baseUrl, port, endPoint);
                     }
                 }
             }
