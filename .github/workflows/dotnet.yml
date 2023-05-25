@@ -23,6 +23,6 @@ jobs:
     - name: Check format, build and test
       run: |
         dotnet restore
-        dotnet format --verify-no-changes App.sln
+        dotnet format --verify-no-changes DemoKeypleLess.sln
         dotnet build --no-restore
         dotnet test --no-build --verbosity normal
