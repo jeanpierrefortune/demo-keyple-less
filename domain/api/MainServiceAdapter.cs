@@ -1,25 +1,13 @@
 ﻿using DemoKeypleLess.domain.data;
 using DemoKeypleLess.domain.spi;
 using DemoKeypleLess.domain.utils;
-using DemoKeypleLess.infrastructure.pcscreader;
-using DemoKeypleLess.infrastructure.server;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using PCSC.Iso7816;
 using Serilog;
+using Serilog.Events;
 
 namespace DemoKeypleLess.domain.api {
-    class InputData {
-    }
 
-    class ExecuteRemoteServiceBodyContent {
-        [JsonProperty ( "serviceId" )]
-        public string ServiceId { get; set; }
-
-        [JsonProperty ( "inputData" )]
-        public InputData InputData { get; set; }
-    }
 
     class MainServiceAdapter : MainServiceApi {
         private readonly ILogger _logger;
@@ -33,7 +21,7 @@ namespace DemoKeypleLess.domain.api {
         private const int SW1_MASK = 0xFF00;
         private const int SW2_MASK = 0x00FF;
 
-        internal MainServiceAdapter ( ReaderServiceSpi readerService, ServerSpi server )
+        internal MainServiceAdapter ( ReaderServiceSpi readerService, string readerName, ServerSpi server )
         {
             _logger = Log.ForContext<MainServiceAdapter> ();
 
@@ -45,12 +33,20 @@ namespace DemoKeypleLess.domain.api {
             _clientNodeId = Guid.NewGuid ().ToString ();
 
             List<string> readerNames = readerService.GetReaders ();
+            
             if (readerNames.Count == 0)
             {
-                _logger.Warning ( "No reader found!" );
+                Misc.DisplayAndLog ( "No reader found!", ConsoleColor.Red, LogEventLevel.Error, _logger );
                 Environment.Exit ( 1 );
             }
-            _localReaderName = readerNames[0];
+
+            if (!readerNames.Contains ( readerName ))
+            {
+                Misc.DisplayAndLog ( $"Reader '{readerName}' is not found in the list of readers.", ConsoleColor.Red, LogEventLevel.Error, _logger );
+                Environment.Exit ( 1 );
+            }
+
+            _localReaderName = readerName;
             _logger.Information ( $"Select reader {_localReaderName}" );
             readerService.SelectReader ( _localReaderName );
         }
@@ -196,7 +192,7 @@ namespace DemoKeypleLess.domain.api {
                         throw new UnexpectedStatusWordException ( "Unexpected status word." );
                     }
                 }
-                catch (ReaderIOException ex)
+                catch (ServerIOException ex)
                 {
                     // The process has been interrupted. We close the logical channel and throw a
                     // ReaderBrokenCommunicationException.
@@ -223,8 +219,13 @@ namespace DemoKeypleLess.domain.api {
 
         private CardSelectionResponse ProcessCardSelectionRequest ( CardSelectionRequest cardSelectionRequest )
         {
+            _readerService.OpenPhysicalChannel ();
             ApduResponse selectAppResponse = SelectApplication ( cardSelectionRequest.CardSelector );
-            CardResponse cardResponse = ProcessCardRequest ( cardSelectionRequest.CardRequest );
+            CardResponse cardResponse = null;
+            if (cardSelectionRequest.CardRequest != null)
+            {
+                cardResponse = ProcessCardRequest ( cardSelectionRequest.CardRequest );
+            }
             CardSelectionResponse cardSelectionResponse = new CardSelectionResponse { HasMatched = true, PowerOnData = _readerService.GetPowerOnData (), SelectApplicationResponse = selectAppResponse, CardResponse = cardResponse };
             return cardSelectionResponse;
         }
@@ -232,68 +233,50 @@ namespace DemoKeypleLess.domain.api {
         private MessageDto ProcessTransaction ( MessageDto message )
         {
             bool isServiceEnded = false;
-            do
+            while (message.Action != "END_REMOTE_SERVICE")
             {
                 _logger.Information ( $"Processing action {message.Action}" );
-                switch (message.Action)
+                var jsonObject = JObject.Parse ( message.Body );
+                string service = jsonObject["service"].ToString ();
+                JObject body = new JObject ();
+                body["service"] = service;
+                _logger.Information ( $"Service: {service}" );
+                switch (service)
                 {
-                    case "CMD":
-                        var jsonObject = JObject.Parse ( message.Body );
-                        string service = jsonObject["service"].ToString ();
-                        JObject body = new JObject ();
-                        body["service"] = service;
-                        _logger.Information ( $"Service: {service}" );
-                        switch (service)
-                        {
-                            case "IS_CONTACTLESS":
-                                body["result"] = true;
-                                break;
-                            case "IS_CARD_PRESENT":
-                                body["result"] = true;
-                                break;
-                            case "TRANSMIT_CARD_SELECTION_REQUESTS":
-                                var transmitCardSelectionRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardSelectionRequestsCmdBody> ( message.Body );
-                                var cardSelectionRequest = transmitCardSelectionRequestsCmdBody.Parameters.CardSelectionRequests[0];
-                                var cardSelectionResponse = ProcessCardSelectionRequest ( cardSelectionRequest );
-                                var cardSelectionResponses = new List<CardSelectionResponse> ();
-                                cardSelectionResponses.Add ( cardSelectionResponse );
-                                body["result"] = JArray.FromObject ( cardSelectionResponses );
-                                break;
-                            case "TRANSMIT_CARD_REQUESTS":
-                                var transmitCardRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardRequestCmdBody> ( message.Body );
-                                var cardRequest = transmitCardRequestsCmdBody.Parameters.CardRequest;
-                                var cardResponse = ProcessCardRequest ( cardRequest );
-                                body["result"] = JObject.FromObject ( cardResponse );
-                                break;
-                        }
-                        message.SetAction ( "RESP" );
-                        string jsonBodyString = JsonConvert.SerializeObject ( body, Formatting.None );
-                        message.SetBody ( jsonBodyString ); 
-                        var jsonResponse = _server.transmitRequest ( JsonConvert.SerializeObject ( message, Formatting.None ) );
-                        message = JsonConvert.DeserializeObject<List<MessageDto>> ( jsonResponse )[0];
+                    case "IS_CONTACTLESS":
+                        body["result"] = true;
                         break;
-                    case "END_REMOTE_SERVICE":
-                        isServiceEnded = true;
+                    case "IS_CARD_PRESENT":
+                        body["result"] = true;
                         break;
-                    default:
-                        _logger.Error ( "Unexpected action ID" );
-                        isServiceEnded = true;
+                    case "TRANSMIT_CARD_SELECTION_REQUESTS":
+                        var transmitCardSelectionRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardSelectionRequestsCmdBody> ( message.Body );
+                        var cardSelectionRequest = transmitCardSelectionRequestsCmdBody.Parameters.CardSelectionRequests[0];
+                        var cardSelectionResponse = ProcessCardSelectionRequest ( cardSelectionRequest );
+                        var cardSelectionResponses = new List<CardSelectionResponse> ();
+                        cardSelectionResponses.Add ( cardSelectionResponse );
+                        body["result"] = JArray.FromObject ( cardSelectionResponses );
+                        break;
+                    case "TRANSMIT_CARD_REQUEST":
+                        var transmitCardRequestsCmdBody = JsonConvert.DeserializeObject<TransmitCardRequestCmdBody> ( message.Body );
+                        var cardRequest = transmitCardRequestsCmdBody.Parameters.CardRequest;
+                        var cardResponse = ProcessCardRequest ( cardRequest );
+                        body["result"] = JObject.FromObject ( cardResponse );
                         break;
                 }
-
-            } while (!isServiceEnded);
+                message.SetAction ( "RESP" );
+                string jsonBodyString = JsonConvert.SerializeObject ( body, Formatting.None );
+                message.SetBody ( jsonBodyString );
+                var jsonResponse = _server.transmitRequest ( JsonConvert.SerializeObject ( message, Formatting.None ) );
+                message = JsonConvert.DeserializeObject<List<MessageDto>> ( jsonResponse )[0];
+            }
             return message;
         }
 
-        private string ExecuteRemoteService ( string serviceId, string parameter )
+        private string ExecuteRemoteService ( string serviceId, InputData inputData )
         {
             string sessionId = Guid.NewGuid ().ToString ();
 
-            // Create and fill InputData object
-            InputData inputData = new InputData
-            {
-
-            };
 
             // Create and fill ExecuteRemoteServiceBodyContent object
             ExecuteRemoteServiceBodyContent bodyContent = new ExecuteRemoteServiceBodyContent
@@ -303,8 +286,6 @@ namespace DemoKeypleLess.domain.api {
             };
 
             // Create and fill RemoteServiceDto object
-
-
             var message = new MessageDto ()
                 .SetAction ( "EXECUTE_REMOTE_SERVICE" )
                 .SetBody ( JsonConvert.SerializeObject ( bodyContent, Formatting.None ) )
@@ -320,90 +301,29 @@ namespace DemoKeypleLess.domain.api {
 
             return message.Body;
         }
+        public void WaitForCardInsertion ( )
+        {
+            _readerService.WaitForCardPresent();
+        }
+
+        public void WaitForCardRemoval ( )
+        {
+            _readerService.WaitForCardAbsent();
+        }
 
         public string SelectAndReadContracts ( )
         {
-            Guid sessionId = Guid.NewGuid ();
-            _logger.Information ( "Waiting for a card..." );
-            _readerService.WaitForCardPresent ();
+            _logger.Information ( "Execute remote service to read the card content..." );
 
-            _logger.Information ( "Card found." );
-
-            _readerService.OpenPhysicalChannel ();
-
-
-            _logger.Information ( "Execute remote service." );
-
-            return ExecuteRemoteService ( "SELECT_APP_AND_READ_CONTRACTS", "" );
+            return ExecuteRemoteService ( "SELECT_APP_AND_READ_CONTRACTS", new InputDataRead { } );
         }
 
-        public string SelectAndWriteContract ( int contractNumber )
+        public string SelectAndIncreaseContractCounter ( int counterIncrement )
         {
-            throw new NotImplementedException ();
+            _logger.Information ( "Execute remote service to increase the contract counter..." );
+
+            return ExecuteRemoteService ( "SELECT_APP_AND_INCREASE_CONTRACT_COUNTER", new InputDataWrite { CounterIncrement = counterIncrement.ToString () } );
         }
 
-        private const string GET_CHALLENGE = "0084000008";
-        private const string SELECT_APP_IDFM = "00A404000AA000000404012509010100";
-
-        /* 
-                public void StartPcsc ( )
-                {
-                    ReaderServiceSpi cardService = PcscReaderServiceSpiProvider.getInstance ();
-                    List<string> readerNames = cardService.GetReaders ();
-                    if (readerNames.Count == 0)
-                    {
-                        _logger.Warning ( "No reader found!" );
-                        Environment.Exit ( 1 );
-                    }
-                    cardService.SelectReader ( readerNames[0] );
-                    while (true)
-                    {
-                        try
-                        {
-                            Console.WriteLine ( "Waiting for a card..." );
-                            cardService.WaitForCardPresent ();
-                            cardService.OpenPhysicalChannel ();
-                            Console.WriteLine ( $"Power on data = {cardService.GetPowerOnData ()}" );
-                            byte[] response = cardService.TransmitApdu ( HexUtil.ToByteArray ( SELECT_APP_IDFM ) );
-                            Console.WriteLine ( $"Select App IDFM = {HexUtil.ToHex ( response )}" );
-                            response = cardService.TransmitApdu ( HexUtil.ToByteArray ( GET_CHALLENGE ) );
-                            Console.WriteLine ( $"Challenge = {HexUtil.ToHex ( response )}" );
-                            Console.WriteLine ( "Waiting for the card removal..." );
-                            cardService.WaitForCardAbsent ();
-                        }
-                        catch (UnexpectedStatusWordException e) { Console.WriteLine ( $"A card IO exception occurred: {e.Message}" ); }
-                        catch (ReaderIOException e) { Console.WriteLine ( $"A reader IO exception occurred: {e.Message}" ); }
-                    }
-                }
-
-               public void StartClient ( )
-                {
-                    Guid clientNodeId = Guid.NewGuid ();
-                    Guid sessionId = Guid.NewGuid ();
-                    ServerSpi server = ServerSpiProvider.getInstance ( "http://localhost", 8080, "card/remote-plugin" );
-
-                    // Create and fill InputData object
-                    InputData inputData = new InputData
-                    {
-
-                    };
-
-                    // Create and fill ExecuteRemoteServiceBodyContent object
-                    ExecuteRemoteServiceBodyContent bodyContent = new ExecuteRemoteServiceBodyContent
-                    {
-                        ServiceId = "SELECT_APP_AND_READ_CONTRACTS",
-                        InputData = inputData
-                    };
-
-                    // Create and fill RemoteServiceDto object
-                    MessageDto serviceRequestDto = new MessageDto
-                    {
-                        Action = "EXECUTE_REMOTE_SERVICE",
-                        Body = JsonConvert.SerializeObject ( bodyContent ),
-                        ClientNodeId = clientNodeId.ToString (),
-                        LocalReaderName = "READER_1",
-                        SessionId = sessionId.ToString ()
-                    };
-                }*/
     }
 }

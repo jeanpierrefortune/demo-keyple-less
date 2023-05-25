@@ -7,8 +7,10 @@ using Serilog.Events;
 using System.Runtime.Versioning;
 using System.ServiceProcess;
 
-namespace DemoKeypleLess.infrastructure.pcscreader
-{
+namespace DemoKeypleLess.infrastructure.pcscreader {
+    /// <summary>
+    /// Adapter class that implements the ReaderServiceSpi interface for PC/SC smart card readers.
+    /// </summary>
     internal class PcscReaderServiceSpiAdapter : ReaderServiceSpi {
         private readonly ILogger _logger;
         private readonly IContextFactory _contextFactory;
@@ -19,9 +21,8 @@ namespace DemoKeypleLess.infrastructure.pcscreader
         private const string SmartCardServiceName = "SCardSvr";
         private const int ReceiveBufferSize = 256;
 
-
         /// <summary>
-        /// Creates a new instance of the <see cref="ReaderServiceSpi"/> class.
+        /// Creates a new instance of the <see cref="PcscReaderServiceSpiAdapter"/> class.
         /// </summary>
         public PcscReaderServiceSpiAdapter ( )
         {
@@ -29,7 +30,6 @@ namespace DemoKeypleLess.infrastructure.pcscreader
             _contextFactory = ContextFactory.Instance;
             _context = _contextFactory.Establish ( SCardScope.System );
         }
-
 
         /// <inheritdoc/>
         [SupportedOSPlatform ( "windows" )]
@@ -44,7 +44,7 @@ namespace DemoKeypleLess.infrastructure.pcscreader
             {
                 try
                 {
-                    // StartPcsc the service if the current status is stopped.
+                    // Start the service if the current status is stopped.
                     sc.Start ();
                 }
                 catch (InvalidOperationException ex)
@@ -123,8 +123,8 @@ namespace DemoKeypleLess.infrastructure.pcscreader
             {
                 var readerStates = new[]
                 {
-            new SCardReaderState { ReaderName = _readerName, CurrentState = SCRState.Unknown }
-        };
+                    new SCardReaderState { ReaderName = _readerName, CurrentState = SCRState.Unknown }
+                };
 
                 while (true)
                 {
